@@ -17,7 +17,8 @@ function cayA = caymod(A)
     
     B = gellmannAlg2matrixField(A);    % transform coefficients A into the corresponding matrix in the Lie algebra
 
-    gamma_inv = -0.5*sum(A.^2,2)./imag_det_su3(A);
+    tmp = A.^2;
+    gamma_inv = -0.5*sum(tmp,2)./imag_det_su3(A,tmp);
     gamma_inv(isinf(gamma_inv)) = 0;
 
     sin_theta = -0.5 * (gamma_inv -sign(gamma_inv).*sqrt(gamma_inv.^2 + 1));
@@ -33,8 +34,7 @@ function cayA = caymod(A)
     cayA = matMultField(inv_term,B);
 end
 
-function res = imag_det_su3(A)
-    tmp = A.^2;
+function res = imag_det_su3(A,tmp)
     res = A(:,3).* (-tmp(:,4) - tmp(:,5) + tmp(:,6) + tmp(:,7)) ...
         - 2*(A(:,1).*A(:,4) + A(:,2).*A(:,5)).*A(:,6) ...
         + 2*(A(:,2).*A(:,4) - A(:,1).*A(:,5)).*A(:,7) ...
